@@ -1,4 +1,5 @@
 library(Rcpp)
+library(ggplot2)
 
 # 1. Compile the C++ code
 sourceCpp("calc_snp.cpp")
@@ -11,12 +12,48 @@ solve_ej <- function(n) {
 }
 
 # 3. Execute
+# n_val <- 30
+# b_val <- 5
+# expected_times <- Calculate_e_j(n_val, 1, kappa = 1)
+
+# result <- Calculate_SNP_Probabilities(n_val, b_val, expected_times)
+# print(paste("Probability:", result))
+
 n_val <- 30
-b_val <- 5
-expected_times <- Calculate_e_j(n_val, 1, kappa = 1) # solve_ej(n)
+b_list <- c(1:15)
 
-result <- Calculate_SNP_Probabilities(n_val, b_val, expected_times)
-print(paste("Probability:", result))
-
-# b_list <- c(1, 2, 3)
+# expected_times <- Calculate_e_j(n_val, 1, kappa = 1)
 # res = Calculate_SNP_Probabilities(n_val, b_list, expected_times)
+# print(res)
+
+# Calculate e_j for three different models (example types)
+# 1: Constant, 2: Exponential Growth, 3: Population Bottleneck (Hypothetical)
+ej_0  <- Calculate_e_j(n_val, population_type = 0)
+ej_1  <- Calculate_e_j(n_val, population_type = 1, kappa = 1)
+ej_10 <- Calculate_e_j(n_val, population_type = 1, kappa = 10)
+
+# Compute probabilities using your vectorized C++ function
+prob_0  <- Calculate_SNP_Probabilities(n_val, b_list, ej_0)
+prob_1  <- Calculate_SNP_Probabilities(n_val, b_list, ej_1)
+prob_10 <- Calculate_SNP_Probabilities(n_val, b_list, ej_10)
+
+# Combine into a data frame for plotting
+plot_data <- data.frame(
+  b = rep(b_list, 3),
+  probability = c(prob_0, prob_1, prob_10),
+  model = rep(c("kappa = 0", "kappa = 1", "kappa = 10"), each = length(b_list))
+)
+
+ggplot(plot_data, aes(x = b, y = probability, color = model, shape = model)) +
+  geom_point(size = 3) +
+  geom_line(alpha = 0.3) +                # Optional: adds faint lines to see trends
+  scale_y_log10() +                       # Sets y-axis to logarithmic
+  labs(
+    title = "SNP Probabilities by Population Model",
+    x = "Mutation Count (b)",
+    y = "Probability (Log Scale)",
+    color = "Population Model",
+    shape = "Population Model"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")

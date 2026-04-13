@@ -36,12 +36,7 @@ using namespace Rcpp;
    return e_j;
  }
  
- //' Calculate SNP Probabilities using recursive coefficients
- //' @param n Sample size
- //' @param b Mutation count (frequency)
- //' @param e_j Vector of expected coalescence times (length n-1, for j=2 to n)
- // [[Rcpp::export]]
- double Calculate_SNP_Probabilities(int n, int b, NumericVector e_j) {
+ double single_snp_prob(int n, int b, NumericVector e_j){
    // Note: R vectors are 0-indexed. e_j[0] corresponds to j=2.
    // int num_coeffs = n - 1; 
    std::vector<double> W(n + 1, 0.0);
@@ -86,6 +81,21 @@ using namespace Rcpp;
    }
    
    return numerator / denominator;
+ }
+ 
+ 
+ //' Calculate SNP Probabilities using recursive coefficients
+ //' @param n Sample size
+ //' @param b Mutation count (frequency)
+ //' @param e_j Vector of expected coalescence times (length n-1, for j=2 to n)
+ // [[Rcpp::export]]
+ NumericVector Calculate_SNP_Probabilities(int n, NumericVector b, NumericVector e_j) {
+   int m = b.size();
+   NumericVector out(m);
+   for(int i = 0; i < m; ++i) {
+     out[i] = single_snp_prob(n, b[i], e_j);
+   }
+   return out;
  }
  
  
