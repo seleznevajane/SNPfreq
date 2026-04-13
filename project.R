@@ -11,9 +11,12 @@ solve_ej <- function(n) {
 }
 
 # 3. Execute
-n_val <- 100
+n_val <- 30
 b_val <- 5
-expected_times <- Calculate_e_j(n_val, 0) # solve_ej(n)
+expected_times <- Calculate_e_j(n_val, 1, kappa = 1) # solve_ej(n)
 
 result <- Calculate_SNP_Probabilities(n_val, b_val, expected_times)
 print(paste("Probability:", result))
+
+# b_list <- c(1, 2, 3)
+# res = Calculate_SNP_Probabilities(n_val, b_list, expected_times)

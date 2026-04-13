@@ -1,5 +1,10 @@
 #include <Rcpp.h>
 #include <vector>
+#include <cmath>
+#include <boost/math/special_functions/expint.hpp>
+#include <boost/math/special_functions/gamma.hpp>
+
+// [[Rcpp::depends(BH)]]
 
 using namespace Rcpp;
 
@@ -7,16 +12,27 @@ using namespace Rcpp;
  //' @param n Sample size
  //' @param population_type Model of populations size (0 - constant, 1 - exponential)
  // [[Rcpp::export]]
- NumericVector Calculate_e_j(int n, int population_type = 0, int K = 10, double kappa = 1.0) {
+ NumericVector Calculate_e_j(int n, 
+                             int population_type = 0, 
+                             int Ne0 = 1, 
+                             int K = 10, 
+                             double kappa = 1.0,
+                             double epsilon = 0.01) {
    NumericVector e_j(n - 1, 0.0);
+   
    if (population_type == 0) {
      for (int j = 2; j <= n; j++) {
-       e_j[j - 2] = 2.0 / (j * (j - 1.0));
+       e_j[j - 2] = Ne0 * 2.0 / (j * (j - 1.0));
      }
    }
+   
    if (population_type == 1) {
-     e_j = e_j + kappa;
+     for (int j = 2; j <= n; j++) {
+       double x = (j * (j - 1.0)) / (2.0 * kappa);
+       e_j[j - 2] = - std::exp(x) * boost::math::expint(-x);
+     }
    }
+   
    return e_j;
  }
  
@@ -71,3 +87,7 @@ using namespace Rcpp;
    
    return numerator / denominator;
  }
+ 
+ 
+ 
+ 
