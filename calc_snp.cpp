@@ -10,14 +10,25 @@ using namespace Rcpp;
 
 //' Calculate expectations of coalescence times
  //' @param n Sample size
- //' @param population_type Model of populations size (0 - constant, 1 - exponential)
+ //' @param population_type Model of populations size:
+ //'  0 - constant - need to specify Ne0, 
+ //'  1 - exponential - need to specify kappa = r * Ne0,
+ //'  2 - biphasic - need to specify Ne0, NeT and T,
+ //'  3 - power - need to specify kappa and beta.
+ //' @param kappa The product of current population size and the growth rate (Ne0 * r)
+ //' @param Ne0 Current population size
+ //' @param T In a biphasic model, time in history when the growth model changed
+ //'  from constant to exponential
+ //' @param NeT In a biphasic model, population size at moment T
+ //' @param beta In a power model, the power in the model growth equation
  // [[Rcpp::export]]
  NumericVector Calculate_e_j(int n, 
                              int population_type = 0, 
-                             int Ne0 = 1, 
-                             int K = 10, 
                              double kappa = 1.0,
-                             double epsilon = 0.01) {
+                             int Ne0 = 100,
+                             int T = 10, 
+                             int NeT = 10,
+                             double beta = 0.5) {
    NumericVector e_j(n - 1, 0.0);
    
    if (population_type == 0) {
@@ -30,6 +41,24 @@ using namespace Rcpp;
      for (int j = 2; j <= n; j++) {
        double x = (j * (j - 1.0)) / (2.0 * kappa);
        e_j[j - 2] = - std::exp(x) * boost::math::expint(-x);
+     }
+   }
+   
+   if (population_type == 2) {
+     double r = std::log(Ne0 * 1.0 / NeT) / (T * 1.0);
+     for (int j = 2; j <= n; j++) {
+       double x0 = (j * (j - 1.0)) / (2.0 * r * Ne0);
+       double xT = x0 * std::exp(r * T);
+       e_j[j - 2] = std::exp(x0) * (boost::math::expint(-xT) - boost::math::expint(-x0)) +
+                    std::exp(x0 - xT) / (r * xT);
+     }
+   }
+   
+   if (population_type == 3) {
+     for (int j = 2; j <= n; j++) {
+       double C = (j * (j - 1.0)) / (2.0 * kappa * (1.0 - beta));
+       e_j[j - 2] = std::exp(C + std::log(boost::math::tgamma(1.0 / (1.0 - beta), C)) -
+                    std::log((1.0 - beta) * std::pow(C, 1.0 / (1.0 - beta))));
      }
    }
    
