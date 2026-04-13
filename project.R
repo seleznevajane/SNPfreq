@@ -22,26 +22,31 @@ solve_ej <- function(n) {
 n_val <- 30
 b_list <- c(1:15)
 
-# expected_times <- Calculate_e_j(n_val, 1, kappa = 1)
+# expected_times <- Calculate_e_j(n_val, 3)
+# print(expected_times)
 # res = Calculate_SNP_Probabilities(n_val, b_list, expected_times)
 # print(res)
 
 # Calculate e_j for three different models (example types)
 # 1: Constant, 2: Exponential Growth, 3: Population Bottleneck (Hypothetical)
-ej_0  <- Calculate_e_j(n_val, population_type = 0)
+ej_0  <- Calculate_e_j(n_val, population_type = 0, Ne0 = 10)
 ej_1  <- Calculate_e_j(n_val, population_type = 1, kappa = 1)
 ej_10 <- Calculate_e_j(n_val, population_type = 1, kappa = 10)
+ej_2  <- Calculate_e_j(n_val, population_type = 2, Ne0 = 10, NeT = 1, T = 1)
+ej_3  <- Calculate_e_j(n_val, population_type = 3, kappa = 1, beta = 0.5)
 
 # Compute probabilities using your vectorized C++ function
 prob_0  <- Calculate_SNP_Probabilities(n_val, b_list, ej_0)
 prob_1  <- Calculate_SNP_Probabilities(n_val, b_list, ej_1)
 prob_10 <- Calculate_SNP_Probabilities(n_val, b_list, ej_10)
+prob_2  <- Calculate_SNP_Probabilities(n_val, b_list, ej_2)
+prob_3  <- Calculate_SNP_Probabilities(n_val, b_list, ej_3)
 
 # Combine into a data frame for plotting
 plot_data <- data.frame(
-  b = rep(b_list, 3),
-  probability = c(prob_0, prob_1, prob_10),
-  model = rep(c("kappa = 0", "kappa = 1", "kappa = 10"), each = length(b_list))
+  b = rep(b_list, 5),
+  probability = c(prob_0, prob_1, prob_10, prob_2, prob_3),
+  model = rep(c("constant", "exp(1)", "exp(10)", "biphasic", "power"), each = length(b_list))
 )
 
 ggplot(plot_data, aes(x = b, y = probability, color = model, shape = model)) +
