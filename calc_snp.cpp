@@ -8,19 +8,36 @@
 
 using namespace Rcpp;
 
+//' Calculate scaled exponential integral using asymptotic expansion for large x:
+//' exp(x) * Ei(-x) = 1/x * (1 - 1/x + 2/x^2 - 6/x^3 + 24/x^4)
+//' @param x In exponential growth models, (j * (j - 1) / 2) / (r * Ne0)
+double scaled_expint(double x) {
+  if (x > 50.0) {
+    double invX = 1.0 / x;
+    return invX * (1.0 - invX + (2.0 * invX * invX) - (6.0 * invX * invX * invX) +
+                   (24.0 * invX * invX * invX * invX));
+  } else {
+    return -std::exp(x) * boost::math::expint(-x);
+  }
+}
+
 //' Calculate expectations of coalescence times
  //' @param n Sample size
  //' @param population_type Model of populations size:
  //'  0 - constant - need to specify Ne0, 
  //'  1 - exponential - need to specify kappa = r * Ne0,
  //'  2 - biphasic - need to specify Ne0, NeT and T,
- //'  3 - power - need to specify kappa and beta.
+ //'  3 - power - need to specify kappa and beta,
+ //'  4 - stepwise constant - need to specify tk and eta.
  //' @param kappa The product of current population size and the growth rate (Ne0 * r)
- //' @param Ne0 Current population size
+ //' @param Ne0 Current effective population size
  //' @param T In a biphasic model, time in history when the growth model changed
  //'  from constant to exponential
- //' @param NeT In a biphasic model, population size at moment T
+ //' @param NeT In a biphasic model, effective population size at moment T
  //' @param beta In a power model, the power in the model growth equation
+ //' @param tk In a stepwise constant model, times when the population changed
+ //' @param eta In a stepwise constant model, effective population sizes 
+ //' at time periods tk[i-1] to tk[i]
  // [[Rcpp::export]]
  NumericVector Calculate_e_j(int n, 
                              int population_type = 0, 
@@ -28,7 +45,9 @@ using namespace Rcpp;
                              int Ne0 = 100,
                              int T = 10, 
                              int NeT = 10,
-                             double beta = 0.5) {
+                             double beta = 0.5,
+                             NumericVector tk = NumericVector(),
+                             NumericVector eta = NumericVector()) {
    NumericVector e_j(n - 1, 0.0);
    
    if (population_type == 0) {
@@ -40,7 +59,7 @@ using namespace Rcpp;
    if (population_type == 1) {
      for (int j = 2; j <= n; j++) {
        double x = (j * (j - 1.0)) / (2.0 * kappa);
-       e_j[j - 2] = - std::exp(x) * boost::math::expint(-x);
+       e_j[j - 2] = scaled_expint(x);
      }
    }
    
@@ -62,49 +81,52 @@ using namespace Rcpp;
      }
    }
    
+   if (population_type == 4) {
+     int K = tk.size();
+     std::vector <double> tau(K, 0.0);
+     for (int k = 1; k < K - 2; k++) {
+       tau[k] = tau[k-1] + 1.0 * (tk[k] - tk[k-1]) / eta[k];
+     }
+     for (int j = 2; j <= n; j++) {
+       double C = (j * (j - 1.0)) / 2.0;
+       for (int k = 1; k <= K - 1; k++) {
+         e_j[j - 2] += eta[k] * std::exp(-C * tau[k-1]) * 
+           (1.0 - std::exp(-C * (tk[k] - tk[k-1]) / eta[k])) / C;
+       }
+     }
+   }
+   
    return e_j;
  }
  
  double single_snp_prob(int n, int b, NumericVector e_j){
-   // Note: R vectors are 0-indexed. e_j[0] corresponds to j=2.
-   // int num_coeffs = n - 1; 
    std::vector<double> W(n + 1, 0.0);
    std::vector<double> V(n + 1, 0.0);
    
-   // --- 1. Compute W_j coefficients using Recursion (Eq 15 style) ---
-   // Initializing base cases for the recursion
+   // --- Compute W_j coefficients---
    W[2] = 6.0 / (n + 1.0);
    W[3] = 30.0 * (n - 2.0 * b) / ((n + 1.0) * (n + 2.0));
    
    for (int j = 2; j <= (n - 2); ++j) {
-     // Placeholder for Equation 15: 
-     // Typically: W_{j+2} = -( (coeff1 * W_j) + (coeff2 * W_{j+1}) ) / coeff3
-     // Replace this logic with your specific recursive formula:
-     // double j_val = static_cast<double>(j);
-     // W[j + 2] = ( (j_val + 2.0) * (n - j_val) * W[j] ) / ((j_val + 1.0) * (n + j_val + 1.0)); 
      W[j + 2] = - W[j] * (1.0 + j) * (3.0 + 2.0 * j) * (n - j + 0.0) /
        (j * (2.0 * j - 1) * (n + j + 1.0)) +
          W[j + 1] * (3.0 + 2.0 * j) * (n - 2.0 * b) /
            (j * (n + j + 1.0));
    }
    
-   // --- 2. Compute Denominator coefficients (V_j) (Eq 12 style) ---
-   // Initializing base case for the recursion
+   // --- Compute V_j coefficients ---
    V[2] = 6.0 * (n - 1.0) / (n + 1.0);
    
    for (int j = 4; j <= n; j += 2) {
-     // Placeholder for Equation 12:
-     // V[j] = j * (j - 1.0); // Example: Kingman's coalescent weights
      V[j] = (2.0 * j - 1.0) * (n - j + 1.0) * (n - j + 2.0) * V[j-2] /
        ((2.0 * j - 5.0) * (n + j - 1.0) * (n + j - 2.0));
    }
    
-   // --- 3. Final Calculation ---
+   // --- Final Calculation ---
    double numerator = 0.0;
    double denominator = 0.0;
    
    for (int j = 2; j <= n; ++j) {
-     // Map j index to e_j index (j=2 -> index 0)
      numerator += e_j[j - 2] * W[j];
      denominator += e_j[j - 2] * V[j];
    }
