@@ -77,10 +77,10 @@ the SNP probabilities.
 ```R
 library(SNPfreq)
 # 1. Define sample size
-n <- 40
+n <- 30
 # 2. Calculate expected coalescence times under exponential growth
 # (population_type = 1 for exponential)
-times <- coaltimes(n, population_type = 1, growth_rate = 0.05)
+times <- coaltimes(n, population_type = 1, kappa = 1)
 # 3. Calculate probability of finding 1 to 5 mutant bases
 probs <- SNPprob(n, b = 1:5, e = times)
 # 4. View results
