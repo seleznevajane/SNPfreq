@@ -66,7 +66,7 @@ package:
 # Install remotes if you haven't already
 install.packages("remotes")
 # Install SNPfreq
-remotes::install_github("your-username/SNPfreq")
+remotes::install_github("seleznevajane/SNPfreq")
 ```
 
 ## Quick Start / Usage
