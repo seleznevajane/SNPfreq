@@ -142,3 +142,7 @@ NULL
 #' 
 #' @name coaltimes
 NULL
+
+#' @useDynLib SNPfreq, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
+NULL
