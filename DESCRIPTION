@@ -1,0 +1,35 @@
+Package: SNPfreq
+Title: SNP Probabilities for Various Population Models
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Evgeniia", "Selezneva", 
+           email = "selezneva.evgeniia.a@gmail.com", 
+           role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0009-0005-6576-5789")),
+    person("Thy", "Luong", 
+           email = "thytluong@gmail.com", 
+           role = c("aut", "cph")),
+    person("Marek", "Kimmel",
+           role = "ctb",
+           comment = "Original algorithm design"),
+    person("Andrzej", "Polanski",
+           role = "ctb",
+           comment = "Original algorithm design")
+    )
+Description: Efficient and precise analytical calculation of SNP probabilities 
+    for various demographic models. This package implements the 
+    recursive coefficient method described by Polanski and Kimmel 
+    (2003) <doi:10.1093/genetics/165.1.427>. It provides a 
+    significant speedup over Monte Carlo simulations for calculating 
+    expected coalescence times and mutation frequency probabilities 
+    under constant, exponential, biphasic, power-law, and stepwise constant 
+    population growth models.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports: 
+    Rcpp (>= 1.0.0)
+LinkingTo: 
+    Rcpp,
+    BH
+Config/roxygen2/version: 8.0.0
