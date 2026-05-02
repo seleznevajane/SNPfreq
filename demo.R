@@ -1,10 +1,6 @@
-library(Rcpp)
 library(ggplot2)
 library(scales)
-
-# Compile the C++ code
-sourceCpp("SNPfreq.cpp")
-
+library(SNPfreq)
 
 # Calculate a single SNP probability
 n_val <- 30
