@@ -105,9 +105,9 @@ Evgeniia Selezneva - Maintainer
 
 Thy Luong
 
-Marek Kimmel - Algorithm Design
+Marek Kimmel - Original Algorithm Design
 
-Andrzej Polanski - Algorithm Design
+Andrzej Polanski - Original Algorithm Design
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
