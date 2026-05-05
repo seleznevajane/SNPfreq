@@ -168,7 +168,7 @@ Rcpp::NumericVector SNPprob(int n,
                             Rcpp::NumericVector e) {
   // --- Catch incorrect input ---
   if (e.size() != n - 1) {
-    Rcpp::stop("Expected coalescence times e must be a vector of size n - 1 (use SNPfreq::coaltimes)");
+    Rcpp::stop("Expected coalescence times e must be a vector of size n - 1 (use SNPprob::coaltimes)");
   }
   if (!std::all_of(b.begin(), b.end(), [n] (double val) 
                   {return val >= 1 && val <= (n - 1);})) {
