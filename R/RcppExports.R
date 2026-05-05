@@ -4,12 +4,12 @@
 #' @rdname coaltimes
 #' @export
 coaltimes <- function(n, population_type = 0L, kappa = 1.0, Ne0 = 100L, T = 10L, NeT = 10L, beta = 0.5, tk = as.numeric( c()), eta = as.numeric( c())) {
-    .Call('_SNPfreq_coaltimes', PACKAGE = 'SNPfreq', n, population_type, kappa, Ne0, T, NeT, beta, tk, eta)
+    .Call(`_SNPprob_coaltimes`, n, population_type, kappa, Ne0, T, NeT, beta, tk, eta)
 }
 
 #' @rdname SNPprob
 #' @export
 SNPprob <- function(n, b, e) {
-    .Call('_SNPfreq_SNPprob', PACKAGE = 'SNPfreq', n, b, e)
+    .Call(`_SNPprob_SNPprob`, n, b, e)
 }
 

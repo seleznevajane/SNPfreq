@@ -1,4 +1,4 @@
-Package: SNPfreq
+Package: SNPprob
 Title: SNP Probabilities for Various Population Models
 Version: 0.0.0.9000
 Authors@R: c(
@@ -9,10 +9,10 @@ Authors@R: c(
     person("Thy", "Luong", 
            email = "thytluong@gmail.com", 
            role = c("aut", "cph")),
-    person("Marek", "Kimmel",
+    person("Andrzej", "Polanski",
            role = "ctb",
            comment = "Original algorithm design"),
-    person("Andrzej", "Polanski",
+    person("Marek", "Kimmel",
            role = "ctb",
            comment = "Original algorithm design")
     )

@@ -1,6 +1,6 @@
 library(ggplot2)
 library(scales)
-library(SNPfreq)
+library(SNPprob)
 
 # Calculate a single SNP probability
 n_val <- 30

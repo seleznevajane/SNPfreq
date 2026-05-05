@@ -38,7 +38,7 @@
 #' @seealso [coaltimes()]
 #'
 #' @examples
-#' library(SNPfreq)
+#' library(SNPprob)
 #' 
 #' n = 30
 #' 
@@ -120,7 +120,7 @@ NULL
 #' @seealso [SNPprob()]
 #'
 #' @examples
-#' library(SNPfreq)
+#' library(SNPprob)
 #' n <- 30
 #'
 #' # Constant population model
@@ -143,6 +143,6 @@ NULL
 #' @name coaltimes
 NULL
 
-#' @useDynLib SNPfreq, .registration = TRUE
+#' @useDynLib SNPprob, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 NULL

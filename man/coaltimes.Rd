@@ -85,7 +85,7 @@ This function is designed to be used in conjunction with \code{\link[=SNPprob]{S
 and computes expected times only up to a multiplier.
 }
 \examples{
-library(SNPfreq)
+library(SNPprob)
 n <- 30
 
 # Constant population model

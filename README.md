@@ -1,6 +1,6 @@
-# SNPfreq: SNP Probabilities for Various Population Models
+# SNPprob: SNP Probabilities for Various Population Models
 
-`SNPfreq` is an R package for the efficient and precise analytical calculation 
+`SNPprob` is an R package for the efficient and precise analytical calculation 
 of mutation frequency spectra (SNP probabilities) for various demographic models. 
 
 This package implements the recursive coefficient method described by 
@@ -66,7 +66,7 @@ package:
 # Install remotes if you haven't already
 install.packages("remotes")
 # Install SNPfreq
-remotes::install_github("seleznevajane/SNPfreq")
+remotes::install_github("seleznevajane/SNPprob")
 ```
 
 ## Quick Start / Usage
@@ -75,7 +75,7 @@ The core workflow involves calculating expected coalescence times and then deriv
 the SNP probabilities.
 
 ```R
-library(SNPfreq)
+library(SNPprob)
 # 1. Define sample size
 n <- 30
 # 2. Calculate expected coalescence times under exponential growth

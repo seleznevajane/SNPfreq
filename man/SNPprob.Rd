@@ -40,7 +40,7 @@ effective population size history \eqn{N_e(t), t \in [0, \infty)}. To compute
 \eqn{e_j}, use the function \code{\link[=coaltimes]{coaltimes()}}.
 }
 \examples{
-library(SNPfreq)
+library(SNPprob)
 
 n = 30
 

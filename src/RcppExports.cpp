@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // coaltimes
 Rcpp::NumericVector coaltimes(int n, int population_type, double kappa, int Ne0, int T, int NeT, double beta, Rcpp::NumericVector tk, Rcpp::NumericVector eta);
-RcppExport SEXP _SNPfreq_coaltimes(SEXP nSEXP, SEXP population_typeSEXP, SEXP kappaSEXP, SEXP Ne0SEXP, SEXP TSEXP, SEXP NeTSEXP, SEXP betaSEXP, SEXP tkSEXP, SEXP etaSEXP) {
+RcppExport SEXP _SNPprob_coaltimes(SEXP nSEXP, SEXP population_typeSEXP, SEXP kappaSEXP, SEXP Ne0SEXP, SEXP TSEXP, SEXP NeTSEXP, SEXP betaSEXP, SEXP tkSEXP, SEXP etaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -31,7 +31,7 @@ END_RCPP
 }
 // SNPprob
 Rcpp::NumericVector SNPprob(int n, Rcpp::IntegerVector b, Rcpp::NumericVector e);
-RcppExport SEXP _SNPfreq_SNPprob(SEXP nSEXP, SEXP bSEXP, SEXP eSEXP) {
+RcppExport SEXP _SNPprob_SNPprob(SEXP nSEXP, SEXP bSEXP, SEXP eSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,12 +44,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_SNPfreq_coaltimes", (DL_FUNC) &_SNPfreq_coaltimes, 9},
-    {"_SNPfreq_SNPprob", (DL_FUNC) &_SNPfreq_SNPprob, 3},
+    {"_SNPprob_coaltimes", (DL_FUNC) &_SNPprob_coaltimes, 9},
+    {"_SNPprob_SNPprob", (DL_FUNC) &_SNPprob_SNPprob, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_SNPfreq(DllInfo *dll) {
+RcppExport void R_init_SNPprob(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

@@ -3,4 +3,4 @@
 export(SNPprob)
 export(coaltimes)
 importFrom(Rcpp,sourceCpp)
-useDynLib(SNPfreq, .registration = TRUE)
+useDynLib(SNPprob, .registration = TRUE)
