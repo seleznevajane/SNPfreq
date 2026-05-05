@@ -65,7 +65,7 @@ package:
 ```R
 # Install remotes if you haven't already
 install.packages("remotes")
-# Install SNPfreq
+# Install SNPprob
 remotes::install_github("seleznevajane/SNPprob")
 ```
 
